@@ -1,6 +1,9 @@
 local M = {}
 local api = vim.api
 
+local enabled = true
+local AUGROUP_NAME = "GitBlameVirtualText"
+
 -- Namespace para virtual text
 local blame_ns = api.nvim_create_namespace "git_blame_virtual_text"
 
@@ -17,6 +20,7 @@ local function cache_key(file, line) return file .. ":" .. line end
 
 -- Función principal para mostrar blame virtual text
 function M.blameVirtText()
+  if not enabled then return end
   local ft = vim.fn.expand "%:h:t"
   if ft == "" or ft == "bin" then return end
 
@@ -144,7 +148,7 @@ end
 
 -- Configurar autocomandos
 function M.setup_autocmds()
-  local group = api.nvim_create_augroup("GitBlameVirtualText", { clear = true })
+  local group = api.nvim_create_augroup(AUGROUP_NAME, { clear = true })
 
   -- Mostrar blame cuando el cursor está quieto
   api.nvim_create_autocmd("CursorHold", {
@@ -162,6 +166,19 @@ function M.setup_autocmds()
   })
 end
 
+function M.toggleBlame()
+  enabled = not enabled
+
+  if not enabled then
+    M.clearBlameVirtText()
+    api.nvim_del_augroup_by_name(AUGROUP_NAME)
+    vim.notify("Git Blame disabled", vim.log.levels.INFO)
+  else
+    M.setup_autocmds()
+    vim.notify("Git Blame enabled", vim.log.levels.INFO)
+  end
+end
+
 -- Inicializar autocomandos
 M.setup_autocmds()
 
@@ -171,6 +188,10 @@ return {
   opts = {
     mappings = {
       n = {
+        ["<Leader>gBt"] = {
+          desc = "Toggle Git Blame (GitLens style)",
+          function() M.toggleBlame() end,
+        },
         ["<Leader>gBc"] = {
           desc = "Git Blame",
           function() M.blameVirtText() end,
