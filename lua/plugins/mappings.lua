@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 
-local enabled = true
+local enabled = false
 local AUGROUP_NAME = "GitBlameVirtualText"
 
 -- Namespace para virtual text
