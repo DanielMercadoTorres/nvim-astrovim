@@ -1,0 +1,17 @@
+{
+  "Dev Account ID": {
+    "prefix": "devacc dev",
+    "body": [
+      "dev_account_id: 3412351234"
+    ],
+    "description": "Dev account id"
+  },
+  "Config Dir Path": {
+    "prefix": "cfgdir",
+    "body": [
+      "config_dir: ~/config/test"
+    ],
+    "test": "dev_account_id",
+    "description": "Ruta de config"
+  }
+}
